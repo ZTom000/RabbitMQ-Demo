@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ztom.rabbitmq.demo</groupId>
+    <artifactId>RabbitMQ-Demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!-- 父项目不可缺省，打包方式为 pom 默认为 jar 包，maven 会报错 -->
+    <packaging>pom</packaging>
+
+    <repositories>
+        <repository>
+            <id>aliyunmaven</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <rebbitmq.client.version>5.12.0</rebbitmq.client.version>
+        <commonsio.version>2.10.0</commonsio.version>
+        <springboot.version>2.2.2.RELEASE</springboot.version>
+    </properties>
+
+    <modules>
+        <module>RabbitMQ-Demo-Hello</module>
+        <module>RabbitMQ-Demo-Commons</module>
+        <module>RabbitMQ-Demo-Boot-Producer</module>
+        <module>RabbitMQ-Demo-Producer</module>
+        <module>RabbitMQ-Demo-Boot-Consumer</module>
+        <module>RabbitMQ-Demo-Consumer</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <!--spring boot 2.2.2 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${springboot.version}</version>
+            </dependency>
+            <!-- RabbitMQ Java Client 包 -->
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${rebbitmq.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commonsio.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
