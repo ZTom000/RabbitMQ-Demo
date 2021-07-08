@@ -1,6 +1,7 @@
 package com.ztom.rabbitmq.producer.config;
 
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

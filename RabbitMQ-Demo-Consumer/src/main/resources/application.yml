@@ -1,6 +1,6 @@
 # 服务端口号
 server:
-  port: 8005
+  port: 8006
 # 配置RabbitMQ信息
 spring:
   rabbitmq:
@@ -8,3 +8,7 @@ spring:
     port: 5672
     username: ztom
     password: 123456
+    # 设置监听器 acknowledge 机制
+    listener:
+      simple:
+        acknowledge-mode: manual
