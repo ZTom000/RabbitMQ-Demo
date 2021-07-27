@@ -11,12 +11,6 @@
     <artifactId>RabbitMQ-Demo-Producer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>RabbitMQ-Demo-Producer</name>
-    <repositories>
-        <repository>
-            <id>aliyunmaven</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -52,14 +46,27 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
             <version>${springboot.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ztom.rabbitmq.demo</groupId>
+            <artifactId>RabbitMQ-Demo-Commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-
                 <!-- 指定 java 程序入口，全限定类名 -->
                 <configuration>
                     <mainClass>com.ztom.rabbitmq.producer.RabbitMqDemoProducerApplication</mainClass>

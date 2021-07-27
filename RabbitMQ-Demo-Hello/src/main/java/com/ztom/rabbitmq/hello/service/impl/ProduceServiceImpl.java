@@ -69,4 +69,16 @@ public class ProduceServiceImpl implements ProduceService {
         }
         return flag;
     }
+
+    @Override
+    public Boolean sandMsgConfirmAsycn()  {
+        try{
+            rabbitMQUtil.publishMsgAsycn();
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }

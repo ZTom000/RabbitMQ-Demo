@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <properties>
+        <Property name="app_name">hello</Property>
+    </properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+        <RollingFile name="infoLog"
+                     fileName="${app_name}/logs/info/info.log"
+                     filePattern="${app_name}/logs/info/info.log.%i.%d{yyyy-MM-dd}">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <!-- 设置每日备份 filePattern格式文件 -->
+                <TimeBasedTriggeringPolicy modulate="true" />
+                <!-- 设置满足指定大小则备份 filePattern格式文件 -->
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="errorLog"
+                     fileName="${app_name}/logs/error/error.log"
+                     filePattern="${app_name}/logs/error/error.log.%i.%d{yyyy-MM-dd}">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <!-- 设置每日备份 filePattern格式文件 -->
+                <TimeBasedTriggeringPolicy modulate="true" />
+                <!-- 设置满足指定大小则备份 filePattern格式文件 -->
+                <SizeBasedTriggeringPolicy size="512MB" />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="infoLog" level="INFO" />
+            <AppenderRef ref="errorLog" level="ERROR" />
+        </Root>
+    </Loggers>
+</Configuration>

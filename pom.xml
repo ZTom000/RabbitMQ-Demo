@@ -32,6 +32,8 @@
         <module>RabbitMQ-Demo-Producer</module>
         <module>RabbitMQ-Demo-Boot-Consumer</module>
         <module>RabbitMQ-Demo-Consumer</module>
+        <module>RabbitMQ-Demo-DeadLetter-Producer</module>
+        <module>RabbitMQ-Demo-DeadLetter-Consumer</module>
     </modules>
 
     <dependencyManagement>

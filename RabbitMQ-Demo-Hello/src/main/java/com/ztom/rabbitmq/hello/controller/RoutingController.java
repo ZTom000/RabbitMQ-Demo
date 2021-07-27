@@ -27,4 +27,13 @@ public class RoutingController {
             return "failed";
         }
     }
+
+    @GetMapping("/asycn")
+    public String sandMsgConfirmAsycn() throws Exception {
+        if (produceService.sandMsgConfirmAsycn()) {
+            return "successed";
+        } else {
+            return "failed";
+        }
+    }
 }

@@ -20,7 +20,7 @@ public class AckListener implements ChannelAwareMessageListener {
     private static final Logger logger = LoggerFactory.getLogger(AckListener.class);
 
     @Override
-    @RabbitListener(queues = "adv_queue")
+//    @RabbitListener(queues = "adv_queue")
     public void onMessage(Message message, Channel channel) throws Exception {
         // 获取 Message 的 deliveryTag
         long deliveryTag = message.getMessageProperties().getDeliveryTag();

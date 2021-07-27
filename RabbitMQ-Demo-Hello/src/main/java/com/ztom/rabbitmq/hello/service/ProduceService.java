@@ -19,4 +19,6 @@ public interface ProduceService {
     public Boolean sandMsgRouting(String msg, Integer type);
 
     public Boolean sandMsgTopic(String msg, String routingKey);
+
+    public Boolean sandMsgConfirmAsycn();
 }

@@ -19,7 +19,7 @@ public class RabbitMQListener {
 
     // 设置监听器
     @RabbitListener(queues = "boot_queue")
-    public void ListenerQueue(Message message){
+    public void listenerQueue(Message message) {
         logger.info("msg: " + new String(message.getBody()));
     }
 }

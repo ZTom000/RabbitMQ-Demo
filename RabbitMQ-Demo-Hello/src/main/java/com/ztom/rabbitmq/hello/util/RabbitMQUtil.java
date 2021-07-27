@@ -8,6 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -265,7 +268,8 @@ public class RabbitMQUtil {
 
     public Boolean getMsgRouting(Integer num) {
         try {
-            logger.info("getMsgRouting running...");String queueName[] = {"test_direct_queue_1", "test_direct_queue_2"};
+            logger.info("getMsgRouting running...");
+            String queueName[] = {"test_direct_queue_1", "test_direct_queue_2"};
             Channel channel = getChannel();
             // 接收消息
             DeliverCallback deliverCallback = (consumerTag, message) -> {
@@ -332,7 +336,8 @@ public class RabbitMQUtil {
 
     public Boolean getMsgTopic(Integer num) {
         try {
-            logger.info("getMsgRouting running...");String queueName[] = {"test_topic_queue_1", "test_topic_queue_2"};
+            logger.info("getMsgRouting running...");
+            String queueName[] = {"test_topic_queue_1", "test_topic_queue_2"};
             Channel channel = getChannel();
             // 接收消息
             DeliverCallback deliverCallback = (consumerTag, message) -> {
@@ -354,5 +359,65 @@ public class RabbitMQUtil {
             return false;
         }
         return true;
+    }
+
+    // 异步消息发布确认方法
+    public void publishMsgAsycn() throws Exception {
+        Channel channel = getChannel();
+
+        // 发送消息总数
+        int messageCount = 1000;
+
+        int count = 0;
+
+        // 交换机名
+        String exchangeName = "test_async";
+
+        // 创建交换机
+        channel.exchangeDeclare(exchangeName, BuiltinExchangeType.DIRECT, true, false, false, null);
+        // 队列名
+        String queueName = "asycn_queue";
+        String routingKey = "asycn";
+        // 创建消息队列
+        channel.queueDeclare(queueName, true, false, false, null);
+        // 开启发布确认
+        channel.confirmSelect();
+        // 绑定消息队列和交换机
+        channel.queueBind(queueName, exchangeName, routingKey);
+        // 创建一个线程安全的有序的哈希表
+        ConcurrentSkipListMap<Long, String> oustandingConfirmsMap = new ConcurrentSkipListMap<Long, String>();
+
+        ConfirmCallback ackCallBack = (deliveryTag, multiple) -> {
+            if(multiple){
+                // 删除已确认的消息
+                ConcurrentNavigableMap<Long,String> confrimedMap = oustandingConfirmsMap.headMap(deliveryTag);
+                confrimedMap.clear();
+            }else{
+                oustandingConfirmsMap.remove(deliveryTag);
+            }
+            logger.info("发送" + deliveryTag + "消息已确认...");
+
+        };
+
+        ConfirmCallback nackCallBack = (deliveryTag, multiple) -> {
+            logger.info("发送" + deliveryTag + "消息未确认...");
+        };
+
+        // 添加确认监听器，添加成功确认回调方法，添加未成功确认回调方法
+        channel.addConfirmListener(ackCallBack, nackCallBack);
+        // 开始时间
+        long begin = System.currentTimeMillis();
+        // 发送信息
+        for (int i = 0; i < messageCount; i++) {
+            String message = "{message: " + i + "}";
+            channel.basicPublish(exchangeName, routingKey, null, message.getBytes(StandardCharsets.UTF_8));
+            // 将已发送的消息放入确认消息的map中
+            oustandingConfirmsMap.put(channel.getNextPublishSeqNo(), message);
+        }
+        // 结束时间
+        long end = System.currentTimeMillis();
+
+        logger.info("发布" + messageCount + "个异步确认消息,耗时 " + (end - begin) + "ms");
+
     }
 }

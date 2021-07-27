@@ -12,3 +12,6 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+        # 配置一次从消息队列中获取多少条消息（即最大unacked数）
+        # prefetch: 2
+        #concurrency: 1

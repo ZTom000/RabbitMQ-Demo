@@ -1,6 +1,9 @@
 package com.ztom.rabbitmq.producer.controller;
 
 
+
+
+import com.ztom.rabbitmq.demo.commons.constant.RabbitMQConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -33,7 +36,6 @@ public class ProduceController {
             } else {
                 logger.info("消息接收失败！ " + cause);
             }
-
         });
         // 发送消息
         rabbitTemplate.convertAndSend("adv_exchange", "test", msg.getBytes(StandardCharsets.UTF_8));
@@ -63,7 +65,7 @@ public class ProduceController {
         // routingKey – 路由键名
         rabbitTemplate.setReturnCallback((Message message, int replyCode, String replyText, String exchange, String routingKey) -> {
             logger.info("return 执行了... ");
-            logger.info("{message: " + message + ", replyCode: " + replyCode +", replyText: "
+            logger.info("{message: " + message + ", replyCode: " + replyCode + ", replyText: "
                     + replyText + ", exchange: " + exchange + ", routingKey: " + routingKey + "}");
 
         });
@@ -71,4 +73,34 @@ public class ProduceController {
         rabbitTemplate.convertAndSend("adv_exchange", "test111", msg.getBytes(StandardCharsets.UTF_8));
         return "successed";
     }
+
+    @GetMapping("/sand")
+    public String sandMsgs(@RequestParam(name = "msg", defaultValue = "msg", required = false) String msg) {
+
+        // CorrelationData - 配置信息
+        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+            logger.info("Method Confirm() is running...");
+            if (ack) {logger.info("消息接收成功！ " + cause);
+            } else {
+                logger.info("消息接收失败！ " + cause);
+            }
+        });
+
+        // 设置交换机处理失败消息的模式
+        rabbitTemplate.setMandatory(true);
+
+        // 设置 ReturnCallBack
+        rabbitTemplate.setReturnCallback((Message message, int replyCode, String replyText, String exchange, String routingKey) -> {
+            logger.info("return 执行了... ");
+            logger.info("{message: " + message + ", replyCode: " + replyCode + ", replyText: "
+                    + replyText + ", exchange: " + exchange + ", routingKey: " + routingKey + "}");
+        });
+
+        for (int i = 0; i < 10; i++) {
+            String str = msg + " " + i;
+            rabbitTemplate.convertAndSend(RabbitMQConstant.ADV_EXACHANGE_NAME, RabbitMQConstant.ADV_ROUTING_KEY, str.getBytes(StandardCharsets.UTF_8));
+        }
+        return "successed";
+    }
+
 }
